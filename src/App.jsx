@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect, useId } from "react";
+фimport React, { useState, useRef, useMemo, useEffect, useId } from "react";
 import { Search, Play, Check, X, Radio, Sparkles, RotateCcw, ChevronRight, Mic2, Award, Camera, ChevronLeft, BookOpen, User, Volume2, Timer, Zap, Flame, Lock, Download } from "lucide-react";
 
 /* ================================================================== */
