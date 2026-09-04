@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo, useEffect } from "react";
+import React, { useState, useRef, useMemo, useEffect, useId } from "react";
 import { Search, Play, Check, X, Radio, Sparkles, RotateCcw, ChevronRight, Mic2, Award, Camera, ChevronLeft, BookOpen, User, Volume2, Timer, Zap, Flame, Lock, Download } from "lucide-react";
 
 /* ================================================================== */
@@ -16,7 +16,7 @@ const ACCENT_L1 = [
   { w: ["сред","ства"], s: 0, note: "мн.ч. от «средство»" },
   { w: ["си","ро","ты"], s: 1, note: "мн.ч. от «сирота»" },
   { w: ["ик","сы"], s: 0, note: "мн.ч. от «икс»" },
-  { w: ["кра","ны"], s: 0, note: "мн.ч. от «кран»" },
+  { w: ["кра","ны"], s: 0, note: "мн.ч. от «кран»" },a
   { w: ["до","суг"], s: 1, note: "свободное время" },
   { w: ["ка","та","лог"], s: 2, note: "каталог товаров" },
   { w: ["квар","тал"], s: 1, note: "квартал года" },
@@ -786,23 +786,60 @@ function OnAirDot({ active }) {
 
 /* Талисман «Говорун» — дружелюбная говорящая птица, флет-иконка SVG */
 function GovorunBird({ size = 56, mood = "normal" }) {
+  const uid = useId().replace(/:/g, "");
   return (
-    <svg width={size} height={size} viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width={size} height={size} viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id={`bodyG-${uid}`} cx="38%" cy="30%" r="75%">
+          <stop offset="0%" stopColor="#F4C878" />
+          <stop offset="55%" stopColor={AMBER} />
+          <stop offset="100%" stopColor="#C9821F" />
+        </radialGradient>
+        <radialGradient id={`headG-${uid}`} cx="35%" cy="28%" r="70%">
+          <stop offset="0%" stopColor="#F6D48E" />
+          <stop offset="60%" stopColor={AMBER} />
+          <stop offset="100%" stopColor="#C77E1D" />
+        </radialGradient>
+        <linearGradient id={`wingL-${uid}`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor="#EA7C46" />
+          <stop offset="100%" stopColor="#B8481C" />
+        </linearGradient>
+        <linearGradient id={`wingR-${uid}`} x1="100%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stopColor="#EA7C46" />
+          <stop offset="100%" stopColor="#B8481C" />
+        </linearGradient>
+        <radialGradient id={`bellyG-${uid}`} cx="40%" cy="20%" r="80%">
+          <stop offset="0%" stopColor="#FFFBF0" />
+          <stop offset="100%" stopColor="#E4D8B8" />
+        </radialGradient>
+      </defs>
+      {/* тень под птицей — придаёт объём и «приземлённость» */}
+      <ellipse cx="60" cy="114" rx="24" ry="5" fill="#000" opacity="0.22" />
       {/* хвост */}
-      <path d="M60 96 Q52 112 60 116 Q68 112 60 96 Z" fill="#4C9A8F" />
-      {/* крылья — симметрично по бокам */}
-      <path d="M34 58 Q14 68 26 96 Q42 94 42 66 Z" fill={CORAL} />
-      <path d="M86 58 Q106 68 94 96 Q78 94 78 66 Z" fill={CORAL} />
-      {/* тело */}
-      <ellipse cx="60" cy="72" rx="30" ry="34" fill={AMBER} />
+      <path d="M60 96 Q52 112 60 116 Q68 112 60 96 Z" fill="#3E8579" />
+      {/* крылья — симметрично по бокам, с градиентом, прожилками перьев и взмахом для «живости» */}
+      <g className="wing-left">
+        <path d="M34 58 Q14 68 26 96 Q42 94 42 66 Z" fill={`url(#wingL-${uid})`} />
+        <path d="M30 66 Q22 76 28 90 M35 63 Q28 74 32 92" stroke="rgba(0,0,0,0.18)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      </g>
+      <g className="wing-right">
+        <path d="M86 58 Q106 68 94 96 Q78 94 78 66 Z" fill={`url(#wingR-${uid})`} />
+        <path d="M90 66 Q98 76 92 90 M85 63 Q92 74 88 92" stroke="rgba(0,0,0,0.18)" strokeWidth="1.4" fill="none" strokeLinecap="round" />
+      </g>
+      {/* тело — радиальный градиент имитирует объём сферы */}
+      <ellipse cx="60" cy="72" rx="30" ry="34" fill={`url(#bodyG-${uid})`} />
       {/* живот */}
-      <ellipse cx="60" cy="82" rx="17" ry="21" fill={CREAM} />
-      {/* голова анфас */}
-      <circle cx="60" cy="40" r="27" fill={AMBER} />
-      {/* хохолок */}
-      <path d="M46 18 Q50 6 56 17 Z" fill={CORAL} />
-      <path d="M54 13 Q60 0 66 13 Z" fill="#4C9A8F" />
-      <path d="M64 17 Q70 6 74 18 Z" fill={CORAL} />
+      <ellipse cx="60" cy="82" rx="17" ry="21" fill={`url(#bellyG-${uid})`} />
+      {/* голова анфас — тоже с объёмным градиентом */}
+      <circle cx="60" cy="40" r="27" fill={`url(#headG-${uid})`} />
+      {/* шапка выпускника — небольшая, чуть набекрень */}
+      <ellipse cx="60" cy="21" rx="11" ry="5" fill={AMBER} />
+      <ellipse cx="60" cy="18" rx="11" ry="5" fill="#14161B" />
+      <path d="M38 9 L65 1 L82 8 L55 16 Z" fill="#14161B" />
+      <circle cx="64" cy="6" r="1.8" fill={AMBER} />
+      <path d="M70 7 Q80 10 82 18" stroke={AMBER} strokeWidth="1.6" fill="none" strokeLinecap="round" />
+      <path d="M82 18 L79 26 M82 18 L83 27 M82 18 L86 25" stroke={AMBER} strokeWidth="1.3" strokeLinecap="round" />
+      <circle cx="82" cy="18" r="1.8" fill={AMBER} />
       {/* глаза — зависят от настроения птицы */}
       {mood === "love" ? (
         <>
@@ -928,6 +965,75 @@ function playTone(correct) {
       osc.stop(t0 + (correct ? 0.26 : 0.32));
     });
     setTimeout(() => ctx.close(), 700);
+  } catch (e) { /* аудио недоступно — тихо игнорируем */ }
+}
+
+/* Звуковое сопровождение заставки: свист летящих букв, стук кубиков, торжественный перезвон */
+function playIntroSound() {
+  try {
+    const Ctx = window.AudioContext || window.webkitAudioContext;
+    const ctx = new Ctx();
+    if (ctx.state === "suspended") ctx.resume().catch(() => {});
+    const now = ctx.currentTime;
+
+    const whoosh = (t0, dur, f1, f2, vol) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(f1, t0);
+      osc.frequency.exponentialRampToValueAtTime(f2, t0 + dur);
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(vol, t0 + dur * 0.25);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + dur);
+      const filt = ctx.createBiquadFilter();
+      filt.type = "bandpass";
+      filt.frequency.value = (f1 + f2) / 2;
+      osc.connect(filt).connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + dur + 0.02);
+    };
+    const tock = (t0, freq) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.16, t0 + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.18);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.2);
+    };
+    const chime = (t0, freq) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = "sine";
+      osc.frequency.value = freq;
+      gain.gain.setValueAtTime(0, t0);
+      gain.gain.linearRampToValueAtTime(0.18, t0 + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, t0 + 0.9);
+      osc.connect(gain).connect(ctx.destination);
+      osc.start(t0);
+      osc.stop(t0 + 0.95);
+    };
+
+    // фаза 1: летающие буквы (0–2с) — лёгкие свисты
+    whoosh(now + 0.05, 0.6, 900, 260, 0.06);
+    whoosh(now + 0.55, 0.6, 1100, 300, 0.05);
+    whoosh(now + 1.05, 0.55, 800, 240, 0.05);
+    whoosh(now + 1.5, 0.5, 950, 280, 0.045);
+
+    // фаза 2: кубики приземляются (~3.1–4.0с) — стук по одному
+    [523.25, 587.33, 659.25, 698.46, 783.99, 880, 987.77].forEach((freq, i) => {
+      tock(now + 3.1 + i * 0.15, freq);
+    });
+
+    // фаза 3: птица садится + свечение (~4.9–5.9с) — торжественный перезвон
+    [523.25, 659.25, 783.99, 1046.5].forEach((freq, i) => {
+      chime(now + 4.9 + i * 0.12, freq);
+    });
+
+    setTimeout(() => ctx.close(), 7200);
   } catch (e) { /* аудио недоступно — тихо игнорируем */ }
 }
 
@@ -1673,6 +1779,99 @@ function Logo({ size = 23, birdSize = 40 }) {
   );
 }
 
+/* ================================================================== */
+/*  ЗАСТАВКА ПРИ ВХОДЕ: летающие буквы → кубики складываются в слово   */
+/*  «ГОВОРУН» → прилетает птица → свечение → переход в приложение     */
+/* ================================================================== */
+const INTRO_LETTERS = ["Г", "О", "В", "О", "Р", "У", "Н"];
+const CHAOS_POOL = "АБВГДЕЖЗИЙКЛМНОПРСТУФХЦЧШЩЭЮЯ";
+function IntroSplash({ onDone }) {
+  const [fading, setFading] = useState(false);
+  const soundPlayedRef = useRef(false);
+  useEffect(() => {
+    const tryPlaySound = () => {
+      if (soundPlayedRef.current) return;
+      soundPlayedRef.current = true;
+      playIntroSound();
+    };
+    // Пробуем сразу — сработает там, где браузер разрешает автовоспроизведение.
+    tryPlaySound();
+    // Резерв: большинство браузеров блокируют звук до первого касания экрана —
+    // ловим самое первое касание/клик/нажатие клавиши где угодно на странице и запускаем звук тогда.
+    const unlockEvents = ["pointerdown", "touchstart", "keydown", "click"];
+    unlockEvents.forEach((ev) => window.addEventListener(ev, tryPlaySound, { once: true, passive: true }));
+
+    const t1 = setTimeout(() => setFading(true), 6300);
+    const t2 = setTimeout(() => onDone(), 7000);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      unlockEvents.forEach((ev) => window.removeEventListener(ev, tryPlaySound));
+    };
+  }, [onDone]);
+
+  const chaosLetters = useMemo(() => Array.from({ length: 24 }).map((_, i) => ({
+    ch: CHAOS_POOL[Math.floor(Math.random() * CHAOS_POOL.length)],
+    top: 10 + Math.random() * 80,
+    left: 5 + Math.random() * 90,
+    sx: (Math.random() - 0.5) * 700,
+    sy: (Math.random() - 0.5) * 700,
+    rax: Math.random(), ray: Math.random(),
+    size: 20 + Math.random() * 26,
+    delay: Math.random() * 0.7,
+  })), []);
+
+  const cubes = useMemo(() => INTRO_LETTERS.map((ch, i) => ({
+    ch,
+    sx: (i % 2 === 0 ? -1 : 1) * (260 + Math.random() * 260),
+    sy: -260 - Math.random() * 180,
+    faces: Array.from({ length: 5 }).map(() => CHAOS_POOL[Math.floor(Math.random() * CHAOS_POOL.length)]),
+  })), []);
+
+  return (
+    <div
+      onClick={() => onDone()}
+      className={`fixed inset-0 z-[100] flex items-center justify-center overflow-hidden ${fading ? "intro-fade-out" : ""}`}
+      style={{ background: INK, perspective: 1000 }}
+    >
+      {chaosLetters.map((l, i) => (
+        <span
+          key={i}
+          className="intro-chaos-letter"
+          style={{ top: `${l.top}%`, left: `${l.left}%`, fontSize: l.size, "--sx": `${l.sx}px`, "--sy": `${l.sy}px`, "--rax": l.rax, "--ray": l.ray, animationDelay: `${l.delay}s` }}
+        >
+          {l.ch}
+        </span>
+      ))}
+
+      <div className="relative flex flex-col items-center">
+        <div className="flex gap-1.5 sm:gap-2 intro-glow" style={{ animationDelay: "4.9s", perspective: 700 }}>
+          {cubes.map((c, i) => (
+            <div key={i} style={{ width: 40, height: 40, position: "relative" }}>
+              <div className="intro-cube-inner" style={{ "--sx": `${c.sx}px`, "--sy": `${c.sy}px`, animationDelay: `${1.0 + i * 0.15}s` }}>
+                <div className="intro-cube-face" style={{ background: AMBER, color: INK, fontSize: 20, transform: "translateZ(20px)" }}>{c.ch}</div>
+                <div className="intro-cube-face" style={{ background: "#C9541E", color: CREAM, fontSize: 16, transform: "rotateY(180deg) translateZ(20px)" }}>{c.faces[0]}</div>
+                <div className="intro-cube-face" style={{ background: "#4C9A8F", color: CREAM, fontSize: 16, transform: "rotateY(90deg) translateZ(20px)" }}>{c.faces[1]}</div>
+                <div className="intro-cube-face" style={{ background: "#4C9A8F", color: CREAM, fontSize: 16, transform: "rotateY(-90deg) translateZ(20px)" }}>{c.faces[2]}</div>
+                <div className="intro-cube-face" style={{ background: AMBER, color: INK, fontSize: 18, transform: "rotateX(90deg) translateZ(20px)" }}>{c.ch}</div>
+                <div className="intro-cube-face" style={{ background: "#C9541E", color: CREAM, fontSize: 16, transform: "rotateX(-90deg) translateZ(20px)" }}>{c.faces[4]}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+        {/* птица садится точно на средний (4-й) кубик, поверх всего ряда */}
+        <div className="intro-bird" style={{ position: "absolute", left: "50%", marginLeft: -36, bottom: 40, zIndex: 30, animationDelay: "3.8s" }}>
+          <GovorunBird size={72} mood="love" />
+        </div>
+      </div>
+
+      <button onClick={(e) => { e.stopPropagation(); onDone(); }} className="absolute bottom-8 right-6 text-xs font-semibold" style={{ color: "#5B5F69" }}>
+        Пропустить
+      </button>
+    </div>
+  );
+}
+
 export default function Govorun() {
   const [tab, setTab] = useState("home"); // home | accent | grammar | diction | dict | about
   const [query, setQuery] = useState("");
@@ -1709,8 +1908,12 @@ export default function Govorun() {
   const [badgeCount, setBadgeCount] = useState(0);
   useEffect(() => { setBadgeCount(lsGet("badges", []).length); }, [tab]);
 
+  /* Заставка при входе — один раз за сессию (при обновлении страницы покажется снова) */
+  const [showIntro, setShowIntro] = useState(true);
+
   return (
     <div className="min-h-screen w-full flex justify-center" style={{ background: INK, fontFamily: "'Manrope', sans-serif" }}>
+      {showIntro && <IntroSplash onDone={() => setShowIntro(false)} />}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800;900&family=Manrope:wght@400;500;600;700;800&display=swap');
         @keyframes govorunPulse { 0%,100% { opacity:1 } 50% { opacity:.35 } }
@@ -1741,6 +1944,50 @@ export default function Govorun() {
           100% { transform: translate(0,0) rotate(0deg); opacity:0; }
         }
         .govorun-bird-panic { animation: govorunRunAround 3.1s ease-in-out; }
+
+        /* ===== Заставка при входе: летающие буквы → кубики → птица → свечение ===== */
+        @keyframes introChaosLetter {
+          0% { transform: translate3d(var(--sx), var(--sy), -300px) rotate3d(var(--rax), var(--ray), 1, 0deg) scale(.4); opacity: 0; }
+          12% { opacity: .9; }
+          70% { opacity: .85; }
+          100% { transform: translate3d(calc(var(--sx) * 0.15), calc(var(--sy) * 0.15), -40px) rotate3d(var(--rax), var(--ray), 1, 620deg) scale(.7); opacity: 0; }
+        }
+        .intro-chaos-letter { position: absolute; font-weight: 900; color: #E7A93C; animation: introChaosLetter 2.1s cubic-bezier(.3,.1,.4,1) both; will-change: transform, opacity; }
+
+        @keyframes cubeSettle {
+          0% { transform: translate3d(var(--sx), var(--sy), -320px) rotateX(0deg) rotateY(0deg); opacity: 0; }
+          8% { opacity: 1; }
+          38% { transform: translate3d(calc(var(--sx) * 0.3), calc(var(--sy) * 0.3), -80px) rotateX(560deg) rotateY(380deg); }
+          64% { transform: translate3d(0,0,0) rotateX(1098deg) rotateY(732deg); }
+          78% { transform: translate3d(0, -14px, 0) rotateX(1098deg) rotateY(732deg); }
+          88% { transform: translate3d(0, 5px, 0) rotateX(1098deg) rotateY(732deg); }
+          100% { transform: translate3d(0,0,0) rotateX(1098deg) rotateY(732deg); opacity: 1; }
+        }
+        .intro-cube-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; animation: cubeSettle 2.6s cubic-bezier(.32,1.4,.55,1) both; }
+        .intro-cube-face { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-weight: 900; border-radius: 10px; border: 2px solid rgba(0,0,0,.18); }
+
+        @keyframes wingFlapL { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(-22deg); } }
+        @keyframes wingFlapR { 0%,100% { transform: rotate(0deg); } 50% { transform: rotate(22deg); } }
+        .wing-left { transform-box: fill-box; transform-origin: 100% 20%; animation: wingFlapL 0.9s ease-in-out infinite; }
+        .wing-right { transform-box: fill-box; transform-origin: 0% 20%; animation: wingFlapR 0.9s ease-in-out infinite; }
+
+        @keyframes introBirdFly {
+          0% { transform: translate(130vw, -46vh) rotate(18deg) scale(.6); opacity: 0; }
+          14% { opacity: 1; }
+          60% { transform: translate(6vw, -16vh) rotate(-6deg) scale(1); }
+          82% { transform: translate(0, 0) rotate(2deg) scale(1.06); }
+          100% { transform: translate(0, 0) rotate(0deg) scale(1); opacity: 1; }
+        }
+        .intro-bird { position: absolute; animation: introBirdFly 1.7s cubic-bezier(.22,.9,.35,1) both; }
+
+        @keyframes introGlowPulse {
+          0%, 100% { filter: drop-shadow(0 0 0px rgba(231,169,60,0)); }
+          50% { filter: drop-shadow(0 0 34px rgba(231,169,60,.95)); }
+        }
+        .intro-glow { animation: introGlowPulse 1.1s ease-in-out 2; }
+
+        @keyframes introFadeOut { 0% { opacity: 1; } 100% { opacity: 0; } }
+        .intro-fade-out { animation: introFadeOut .7s ease forwards; }
       `}</style>
 
       <div className="w-full max-w-md min-h-screen flex flex-col" style={{ background: INK }}>
